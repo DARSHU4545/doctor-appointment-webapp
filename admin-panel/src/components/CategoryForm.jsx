@@ -19,11 +19,15 @@ const CategoryForm = ({ fetchCategories }) => {
     formData.append("image", image);
 
     try {
-      await axios.post("http://localhost:5000/api/categories", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await axios.post(
+        "https://doctor-appointment-webapp-bakend.onrender.com/api/categories",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       setName("");
       setImage(null);
       if (fetchCategories) fetchCategories();

@@ -10,7 +10,6 @@ const hospitalRoutes = require("./src/routes/hospital.js");
 const cors = require("cors");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -26,6 +25,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/categories", categoryRoutes);
 app.use("/api/hospitals", hospitalRoutes);
 connectDb();
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.listen(process.env.PORT || 5000, () => {
+  console.log(`Server is running on port ${process.env.PORT}`);
 });

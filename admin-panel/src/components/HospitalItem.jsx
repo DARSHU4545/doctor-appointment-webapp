@@ -7,7 +7,9 @@ const HospitalItem = ({ hospital, fetchHospitals }) => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5000/api/hospitals/${hospital._id}`);
+      await axios.delete(
+        `https://doctor-appointment-webapp-bakend.onrender.com/api/hospitals/${hospital._id}`
+      );
       fetchHospitals();
     } catch (error) {
       console.error("Error deleting hospital:", error);

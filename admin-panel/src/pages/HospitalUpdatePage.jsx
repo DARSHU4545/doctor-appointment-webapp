@@ -39,11 +39,15 @@ const HospitalUpdatePage = () => {
     });
 
     try {
-      await axios.put(`http://localhost:5000/api/hospitals/${id}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await axios.put(
+        `https://doctor-appointment-webapp-bakend.onrender.com/api/hospitals/${id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       // Redirect or update state after successful update
     } catch (error) {
       console.error("Error updating hospital:", error);

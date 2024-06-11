@@ -27,11 +27,15 @@ const HospitalForm = ({ fetchHospitals }) => {
     });
 
     try {
-      await axios.post("http://localhost:5000/api/hospitals/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await axios.post(
+        "https://doctor-appointment-webapp-bakend.onrender.com/api/hospitals/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       setName("");
       setWebsite("");
       setPhoneNumber("");

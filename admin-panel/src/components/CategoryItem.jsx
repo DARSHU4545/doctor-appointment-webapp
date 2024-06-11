@@ -8,7 +8,7 @@ const CategoryItem = ({ category, fetchCategories }) => {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `http://localhost:5000/api/categories/${category._id}`
+        `https://doctor-appointment-webapp-bakend.onrender.com/api/categories/${category._id}`
       );
       fetchCategories();
     } catch (error) {
