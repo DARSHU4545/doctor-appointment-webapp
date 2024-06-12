@@ -14,11 +14,12 @@ const hospitalSchema = new mongoose.Schema(
     address: { type: String, required: true },
     email: { type: String, required: true },
     description: { type: String, required: true },
-    category: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
-      required: true,
-    },
+    category: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
     isPremium: { type: Boolean, default: false },
   },
 

@@ -55,10 +55,7 @@ const HospitalForm = ({ fetchHospitals }) => {
   }, []);
 
   const handleCategoryChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setSelectedCategories(value);
+    setSelectedCategories(event.target.value);
   };
 
   const handleSubmit = async (e) => {
@@ -108,7 +105,7 @@ const HospitalForm = ({ fetchHospitals }) => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex justify-center items-center h-[100%]">
       <Backdrop
         open={submitting || loading}
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, color: "#fff" }}
@@ -181,12 +178,14 @@ const HospitalForm = ({ fetchHospitals }) => {
                 value={selectedCategories}
                 onChange={handleCategoryChange}
                 input={<OutlinedInput label="Category" />}
-                renderValue={(selected) => {
-                  const selectedNames = selected.map(
-                    (id) => categories.find((cat) => cat._id === id)?.name
-                  );
-                  return selectedNames.join(", ");
-                }}
+                renderValue={(selected) =>
+                  selected
+                    .map(
+                      (value) =>
+                        categories.find((cat) => cat._id === value)?.name || ""
+                    )
+                    .join(", ")
+                }
               >
                 {categories.map((cat) => (
                   <MenuItem key={cat._id} value={cat._id}>

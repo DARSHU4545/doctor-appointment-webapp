@@ -58,7 +58,6 @@ router.post("/upload", upload.array("images", 10), async (req, res) => {
       email: req.body.email,
       description: req.body.description,
       category: req.body.category,
-      email: req.body.email,
       isPremium: req.body.isPremium || false,
     });
     await hospital.save();
