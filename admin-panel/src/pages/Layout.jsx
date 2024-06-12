@@ -9,7 +9,7 @@ const Layout = ({ children }) => {
 
       <div className=" w-[100%]">
         <Header />
-        <div>{children}</div>
+        <div className=" h-[90vh] overflow-y-scroll">{children}</div>
       </div>
     </div>
   );

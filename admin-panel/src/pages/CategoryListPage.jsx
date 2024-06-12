@@ -1,15 +1,23 @@
 import React, { useEffect, useState } from "react";
 import CategoryList from "../components/CategoryList";
 import { getCategories } from "../services/CategoryService";
-import { Container, Typography } from "@mui/material";
+import { Container, Typography, Skeleton, Box } from "@mui/material";
 import Layout from "./Layout";
 
 const CategoryListPage = () => {
   const [categories, setCategories] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchCategories = async () => {
-    const data = await getCategories();
-    setCategories(data);
+    try {
+      setIsLoading(true);
+      const data = await getCategories();
+      setCategories(data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -22,10 +30,28 @@ const CategoryListPage = () => {
         <Typography variant="h4" className="mb-8">
           Category Management
         </Typography>
-        <CategoryList
-          categories={categories}
-          fetchCategories={fetchCategories}
-        />
+        {isLoading ? (
+          <Box>
+            <Skeleton variant="text" width="60%" height={30} />
+            <Skeleton
+              variant="rectangular"
+              width="100%"
+              height={100}
+              className="mb-4"
+            />
+            <Skeleton
+              variant="rectangular"
+              width="100%"
+              height={100}
+              className="mb-4"
+            />
+          </Box>
+        ) : (
+          <CategoryList
+            categories={categories}
+            fetchCategories={fetchCategories}
+          />
+        )}
       </Container>
     </Layout>
   );

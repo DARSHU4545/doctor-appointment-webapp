@@ -1,10 +1,19 @@
 import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
+import {
+  CircularProgress,
+  Backdrop,
+  Container,
+  Typography,
+  TextField,
+  Button,
+} from "@mui/material";
 
 const CategoryForm = ({ fetchCategories }) => {
   const [name, setName] = useState("");
   const [image, setImage] = useState(null);
+  const [submitting, setSubmitting] = useState(false); // Add submitting state
 
   const onDrop = (acceptedFiles) => {
     setImage(acceptedFiles[0]);
@@ -14,6 +23,8 @@ const CategoryForm = ({ fetchCategories }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitting(true); // Start submitting
+
     const formData = new FormData();
     formData.append("name", name);
     formData.append("image", image);
@@ -30,55 +41,69 @@ const CategoryForm = ({ fetchCategories }) => {
       );
       setName("");
       setImage(null);
+      setSubmitting(false); // Finish submitting
       if (fetchCategories) fetchCategories();
     } catch (error) {
       console.error("Error uploading category:", error);
+      setSubmitting(false); // Finish submitting on error
     }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="p-4 border border-gray-300 rounded-lg"
-    >
-      <div className="mb-4">
-        <label className="block text-gray-700">Category Name</label>
-        <input
-          type="text"
-          className="mt-1 p-2 border rounded w-full"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-      </div>
-      <div
-        {...getRootProps({
-          className: "border-2 border-dashed p-4 mb-4 cursor-pointer",
-        })}
+    <Container maxWidth="sm">
+      <Backdrop
+        open={submitting}
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, color: "#fff" }}
       >
-        <input {...getInputProps()} />
-        {image ? (
-          <div>
-            <p>{image.name}</p>
-            <button
-              type="button"
-              onClick={() => setImage(null)}
-              className="mt-2 px-4 py-2 bg-red-500 text-white rounded"
-            >
-              Remove
-            </button>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      <div className="mt-4 p-4 border border-gray-300 rounded-lg">
+        <Typography variant="h5" gutterBottom>
+          Category Form
+        </Typography>
+        <form onSubmit={handleSubmit} className="mt-4">
+          <TextField
+            label="Category Name"
+            variant="outlined"
+            fullWidth
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            className="mb-4"
+          />
+          <div
+            {...getRootProps({
+              className: "border-2 border-dashed p-4 mb-4 cursor-pointer",
+            })}
+          >
+            <input {...getInputProps()} />
+            {image ? (
+              <div>
+                <p>{image.name}</p>
+                <Button
+                  type="button"
+                  onClick={() => setImage(null)}
+                  className="mt-2 px-4 py-2 bg-red-500 text-white rounded"
+                >
+                  Remove
+                </Button>
+              </div>
+            ) : (
+              <p>Drag & drop an image here, or click to select one</p>
+            )}
           </div>
-        ) : (
-          <p>Drag & drop an image here, or click to select one</p>
-        )}
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            className="px-4 py-2 bg-blue-500 text-white rounded"
+            disabled={submitting}
+          >
+            Submit
+          </Button>
+        </form>
       </div>
-      <button
-        type="submit"
-        className="px-4 py-2 bg-blue-500 text-white rounded"
-      >
-        Submit
-      </button>
-    </form>
+    </Container>
   );
 };
 

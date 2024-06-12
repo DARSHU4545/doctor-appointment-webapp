@@ -2,13 +2,26 @@ const mongoose = require("mongoose");
 
 const hospitalSchema = new mongoose.Schema(
   {
-    name: String,
-    images: [{ imageUrl: String, cloudinaryId: String }],
-    phoneNumber: String,
-    website: String,
-    address: String,
-    email: String,
+    name: { type: String, required: true },
+    images: [
+      {
+        imageUrl: { type: String, required: true },
+        cloudinaryId: { type: String, required: true },
+      },
+    ],
+    phoneNumber: { type: String, required: true },
+    website: { type: String, required: true },
+    address: { type: String, required: true },
+    email: { type: String, required: true },
+    description: { type: String, required: true },
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+      required: true,
+    },
+    isPremium: { type: Boolean, default: false },
   },
+
   { timestamps: true }
 );
 

@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { Backdrop, CircularProgress } from "@mui/material";
 
 const HospitalItem = ({ hospital, fetchHospitals }) => {
   const navigate = useNavigate();
+  const [deleting, setDeleting] = useState(false); // State for delete loading
 
   const handleDelete = async () => {
+    setDeleting(true); // Start delete loading
     try {
       await axios.delete(
         `https://doctor-appointment-webapp-bakend.onrender.com/api/hospitals/${hospital._id}`
@@ -13,6 +16,8 @@ const HospitalItem = ({ hospital, fetchHospitals }) => {
       fetchHospitals();
     } catch (error) {
       console.error("Error deleting hospital:", error);
+    } finally {
+      setDeleting(false); // Stop delete loading
     }
   };
 
@@ -34,6 +39,7 @@ const HospitalItem = ({ hospital, fetchHospitals }) => {
         <p>Website: {hospital.website}</p>
         <p>Phone: {hospital.phoneNumber}</p>
         <p>Address: {hospital.address}</p>
+        <p>Description:{hospital.description}</p>
       </div>
       <div>
         <button
@@ -49,6 +55,13 @@ const HospitalItem = ({ hospital, fetchHospitals }) => {
           Delete
         </button>
       </div>
+      {/* Loader backdrop */}
+      <Backdrop
+        open={deleting}
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, color: "#fff" }}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </div>
   );
 };

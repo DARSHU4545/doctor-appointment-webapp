@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import axios from "axios";
-import { TextField, Button, Box, Typography } from "@mui/material";
+import { Button, Box, Typography, Skeleton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const CategoryItem = ({ category, fetchCategories }) => {
+const CategoryItem = ({ category, fetchCategories, isLoading }) => {
   const navigate = useNavigate();
+
   const handleDelete = async () => {
     try {
       await axios.delete(
@@ -15,6 +16,29 @@ const CategoryItem = ({ category, fetchCategories }) => {
       console.error("Error deleting category:", error);
     }
   };
+
+  if (isLoading) {
+    return (
+      <Box className="p-4 border border-gray-300 rounded-lg mb-4">
+        <Skeleton variant="text" width="60%" height={30} />
+        <Skeleton
+          variant="rectangular"
+          width="100%"
+          height={100}
+          className="mb-4"
+        />
+        <Box>
+          <Skeleton variant="rectangular" width="30%" height={40} />
+          <Skeleton
+            variant="rectangular"
+            width="30%"
+            height={40}
+            className="ml-2"
+          />
+        </Box>
+      </Box>
+    );
+  }
 
   return (
     <Box className="p-4 border border-gray-300 rounded-lg mb-4">
