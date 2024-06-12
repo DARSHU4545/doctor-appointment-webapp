@@ -14,6 +14,7 @@ import { PhotoCamera } from "@mui/icons-material";
 
 import { getDoctor, updateDoctor } from "../services/DoctorService";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const DoctorUpdate = () => {
   const id = useParams();
@@ -31,7 +32,9 @@ const DoctorUpdate = () => {
   useEffect(() => {
     const fetchDoctor = async () => {
       try {
-        const data = getDoctor(id);
+        const data = await axios.get(
+          `https://doctor-appointment-webapp-bakend.onrender.com/api/doctors/${id}`
+        );
         setFormData(data);
       } catch (error) {
         console.error("There was an error!", error);

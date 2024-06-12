@@ -29,7 +29,7 @@ router.get("/", async (req, res) => {
 // Get a specific doctor
 router.get("/:id", async (req, res) => {
   try {
-    const doctor = await Doctor.findOne(req.params.id);
+    const doctor = await Doctor.findById(req.params.id);
     if (doctor == null) {
       return res.status(404).json({ message: "Doctor not found" });
     }
