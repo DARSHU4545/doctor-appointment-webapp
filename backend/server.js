@@ -6,7 +6,7 @@ const categoryRoutes = require("./src/routes/category.js");
 const { connectDb } = require("./src/db/db.js");
 const cloudinary = require("cloudinary").v2;
 const hospitalRoutes = require("./src/routes/hospital.js");
-
+const filterRoutes = require("./src/routes/filter.js");
 const cors = require("cors");
 
 const app = express();
@@ -24,6 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/categories", categoryRoutes);
 app.use("/api/hospitals", hospitalRoutes);
+app.use("/api/filter", filterRoutes);
 connectDb();
 app.listen(process.env.PORT || 5000, () => {
   console.log(`Server is running on port ${process.env.PORT}`);
