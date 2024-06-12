@@ -1,8 +1,13 @@
 import React from "react";
 import DoctorList from "../components/DoctorList";
+import Layout from "./Layout";
 
 const DoctorListPage = () => {
-  return <DoctorList />;
+  return (
+    <Layout>
+      <DoctorList />
+    </Layout>
+  );
 };
 
 export default DoctorListPage;
