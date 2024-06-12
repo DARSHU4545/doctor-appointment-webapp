@@ -27,6 +27,7 @@ const HospitalUpdatePage = () => {
   const [isPremium, setIsPremium] = useState(false);
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true); // Add loading state
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
     const fetchHospital = async () => {
@@ -41,6 +42,7 @@ const HospitalUpdatePage = () => {
         setSelectedCategories(data.categories.map((cat) => cat._id));
         setIsPremium(data.isPremium);
         setImages(data.images);
+        setEmail(data.email);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching hospital:", error);
@@ -57,6 +59,7 @@ const HospitalUpdatePage = () => {
     formData.append("address", address);
     formData.append("description", description);
     formData.append("isPremium", isPremium);
+    formData.append("email", email);
     selectedCategories.forEach((category) => {
       formData.append("categories", category);
     });
@@ -145,6 +148,16 @@ const HospitalUpdatePage = () => {
               />
             </div>
             <div className="mb-4">
+              <TextField
+                label="Email"
+                variant="outlined"
+                fullWidth
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="mb-4">
               <FormControl fullWidth>
                 <InputLabel>Categories</InputLabel>
                 <Select
@@ -157,7 +170,7 @@ const HospitalUpdatePage = () => {
                     id: "categories",
                   }}
                 >
-                  {hospital.categories.map((category) => (
+                  {hospital?.categories?.map((category) => (
                     <MenuItem key={category._id} value={category._id}>
                       {category.name}
                     </MenuItem>

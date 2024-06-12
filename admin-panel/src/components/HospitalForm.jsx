@@ -29,6 +29,7 @@ const HospitalForm = ({ fetchHospitals }) => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [isPremium, setIsPremium] = useState(false);
   const [images, setImages] = useState([]);
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(true); // Add loading state
   const [submitting, setSubmitting] = useState(false); // Add submitting state
 
@@ -71,6 +72,7 @@ const HospitalForm = ({ fetchHospitals }) => {
     formData.append("address", address);
     formData.append("description", description);
     formData.append("isPremium", isPremium);
+    formData.append("email", email); // Add email to formData
     selectedCategories.forEach((category) => {
       formData.append("categories", category);
     });
@@ -96,6 +98,7 @@ const HospitalForm = ({ fetchHospitals }) => {
       setSelectedCategories([]);
       setIsPremium(false);
       setImages([]);
+      setEmail("");
       setSubmitting(false); // Finish submitting
       if (fetchHospitals) fetchHospitals();
     } catch (error) {
@@ -211,6 +214,17 @@ const HospitalForm = ({ fetchHospitals }) => {
             </Select>
             <FormHelperText>Select if the hospital is premium</FormHelperText>
           </FormControl>
+        </div>
+        <div className="mb-4">
+          <TextField
+            label="Email"
+            variant="outlined"
+            fullWidth
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
         </div>
         <div
           {...getRootProps({
