@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   TableContainer,
   Table,
@@ -15,6 +16,8 @@ import axios from "axios";
 import { getDoctors } from "../services/DoctorService";
 
 const DoctorList = () => {
+  const navigate = useNavigate();
+
   const [doctors, setDoctors] = useState([]);
 
   useEffect(() => {
@@ -76,7 +79,14 @@ const DoctorList = () => {
                   <TableCell>{doctor.about}</TableCell>
                   <TableCell>{doctor.category}</TableCell>
                   <TableCell>
-                    <Button variant="contained" color="primary" size="small">
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="small"
+                      onClick={() => {
+                        navigate(`/doctors/update/${doctor._id}`);
+                      }}
+                    >
                       Update
                     </Button>
                     <Button
