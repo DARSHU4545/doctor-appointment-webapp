@@ -36,8 +36,8 @@ const HospitalUpdatePage = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await getCategories();
-        setCategories(response);
+        const data = await getCategories();
+        setCategories(data);
       } catch (error) {
         console.error("Error fetching categories:", error);
       } finally {

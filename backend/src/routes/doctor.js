@@ -63,10 +63,6 @@ router.post("/", upload.single("image"), async (req, res) => {
 // Update a doctor
 router.put("/:id", upload.single("image"), async (req, res) => {
   try {
-    if (doctor == null) {
-      return res.status(404).json({ message: "Doctor not found" });
-    }
-
     const doctor = new Doctor({
       name: req.body.name,
       address: req.body.address,
@@ -77,6 +73,9 @@ router.put("/:id", upload.single("image"), async (req, res) => {
       image: req.file.path,
       category: req.body.category,
     });
+    if (doctor == null) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
 
     const updatedDoctor = await doctor.save();
     res.json(updatedDoctor);

@@ -9,66 +9,121 @@ import {
   MenuItem,
   FormControl,
   Select,
+  Backdrop,
+  CircularProgress,
 } from "@mui/material";
 import { PhotoCamera } from "@mui/icons-material";
-
-import { getDoctor, updateDoctor } from "../services/DoctorService";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { getCategories } from "../services/CategoryService";
 
 const DoctorUpdate = () => {
-  const id = useParams();
-  const [formData, setFormData] = useState({
-    name: "",
-    address: "",
-    yearsOfExperience: "",
-    startTime: "",
-    endTime: "",
-    about: "",
-    image: null,
-    category: "",
-  });
+  const { id } = useParams();
+  const [loading, setLoading] = useState(false); // Add loading state
+
+  const [name, setName] = useState("");
+  const [address, setAddress] = useState("");
+  const [yearsOfExperience, setYearsOfExperience] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [about, setAbout] = useState("");
+  const [image, setImage] = useState(null);
+  const [category, setCategory] = useState("");
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     const fetchDoctor = async () => {
+      setLoading(true);
       try {
-        const data = await axios.get(
+        const { data } = await axios.get(
           `https://doctor-appointment-webapp-bakend.onrender.com/api/doctors/${id}`
         );
-        setFormData(data);
+        setName(data.name);
+        setAddress(data.address);
+        setYearsOfExperience(data.yearsOfExperience);
+        setStartTime(data.startTime);
+        setEndTime(data.endTime);
+        setAbout(data.about);
+        setCategory(data.category);
       } catch (error) {
         console.error("There was an error!", error);
       }
+      setLoading(false);
     };
 
     fetchDoctor();
   }, [id]);
 
+  useState(() => {
+    setLoading(true);
+    const fetchCategories = async () => {
+      const data = await getCategories();
+      setCategories(data);
+    };
+    fetchCategories();
+    setLoading(false);
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    switch (name) {
+      case "name":
+        setName(value);
+        break;
+      case "address":
+        setAddress(value);
+        break;
+      case "yearsOfExperience":
+        setYearsOfExperience(value);
+        break;
+      case "startTime":
+        setStartTime(value);
+        break;
+      case "endTime":
+        setEndTime(value);
+        break;
+      case "about":
+        setAbout(value);
+        break;
+      case "category":
+        setCategory(value);
+        break;
+      default:
+        break;
+    }
   };
 
   const handleFileChange = (e) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      image: e.target.files[0],
-    }));
+    setImage(e.target.files[0]);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const data = new FormData();
-    for (const key in formData) {
-      data.append(key, formData[key]);
+    data.append("name", name);
+    data.append("address", address);
+    data.append("yearsOfExperience", yearsOfExperience);
+    data.append("startTime", startTime);
+    data.append("endTime", endTime);
+    data.append("about", about);
+    data.append("category", category);
+    if (image) {
+      data.append("image", image);
     }
 
     try {
-      await updateDoctor(id, data);
+      setLoading(true);
+
+      await axios.put(
+        `https://doctor-appointment-webapp-bakend.onrender.com/api/doctors/${id}`,
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      setLoading(false);
     } catch (error) {
       console.error("There was an error!", error);
     }
@@ -76,6 +131,12 @@ const DoctorUpdate = () => {
 
   return (
     <Container component="main" maxWidth="md">
+      <Backdrop
+        open={loading}
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, color: "#fff" }}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Typography variant="h4" component="h1" gutterBottom>
         Update Doctor
       </Typography>
@@ -88,7 +149,7 @@ const DoctorUpdate = () => {
               id="name"
               label="Name"
               name="name"
-              value={formData.name}
+              value={name}
               onChange={handleChange}
             />
           </Grid>
@@ -99,7 +160,7 @@ const DoctorUpdate = () => {
               id="address"
               label="Address"
               name="address"
-              value={formData.address}
+              value={address}
               onChange={handleChange}
             />
           </Grid>
@@ -111,7 +172,7 @@ const DoctorUpdate = () => {
               label="Years of Experience"
               name="yearsOfExperience"
               type="number"
-              value={formData.yearsOfExperience}
+              value={yearsOfExperience}
               onChange={handleChange}
             />
           </Grid>
@@ -126,7 +187,7 @@ const DoctorUpdate = () => {
               InputLabelProps={{
                 shrink: true,
               }}
-              value={formData.startTime}
+              value={startTime}
               onChange={handleChange}
             />
           </Grid>
@@ -141,7 +202,7 @@ const DoctorUpdate = () => {
               InputLabelProps={{
                 shrink: true,
               }}
-              value={formData.endTime}
+              value={endTime}
               onChange={handleChange}
             />
           </Grid>
@@ -154,24 +215,32 @@ const DoctorUpdate = () => {
               name="about"
               multiline
               rows={4}
-              value={formData.about}
+              value={about}
               onChange={handleChange}
             />
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth required>
-              <InputLabel id="category-label">Category</InputLabel>
+              <legend id="category-label">Category</legend>
               <Select
                 labelId="category-label"
                 id="category"
                 name="category"
-                value={formData.category}
+                value={category}
                 onChange={handleChange}
               >
-                <MenuItem value="General">General</MenuItem>
-                <MenuItem value="Cardiology">Cardiology</MenuItem>
-                <MenuItem value="Neurology">Neurology</MenuItem>
-                <MenuItem value="Pediatrics">Pediatrics</MenuItem>
+                {categories.map((cat) => {
+                  return (
+                    <MenuItem
+                      value={cat.name}
+                      onClick={() => setCategory(cat)}
+                      key={cat._id}
+                    >
+                      {cat.name}
+                    </MenuItem>
+                  );
+                })}
+
                 {/* Add more categories as needed */}
               </Select>
             </FormControl>
