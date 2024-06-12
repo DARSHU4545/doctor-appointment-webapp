@@ -40,6 +40,12 @@ const HospitalItem = ({ hospital, fetchHospitals }) => {
         <p>Phone: {hospital.phoneNumber}</p>
         <p>Address: {hospital.address}</p>
         <p>Description:{hospital.description}</p>
+        <div>
+          Doctor Specialities:
+          {hospital.category?.map((cat, ind) => (
+            <p key={ind}>{cat}</p>
+          ))}
+        </div>
       </div>
       <div>
         <button

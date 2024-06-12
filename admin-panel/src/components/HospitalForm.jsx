@@ -71,7 +71,7 @@ const HospitalForm = ({ fetchHospitals }) => {
     formData.append("isPremium", isPremium);
     formData.append("email", email); // Add email to formData
     selectedCategories.forEach((category) => {
-      formData.append("categories", category);
+      formData.append("category", category);
     });
     images.forEach((image, index) => {
       formData.append(`images`, image);
@@ -182,15 +182,15 @@ const HospitalForm = ({ fetchHospitals }) => {
                   selected
                     .map(
                       (value) =>
-                        categories.find((cat) => cat._id === value)?.name || ""
+                        categories.find((cat) => cat.name === value)?.name || ""
                     )
                     .join(", ")
                 }
               >
                 {categories.map((cat) => (
-                  <MenuItem key={cat._id} value={cat._id}>
+                  <MenuItem key={cat._id} value={cat.name}>
                     <Checkbox
-                      checked={selectedCategories.indexOf(cat._id) > -1}
+                      checked={selectedCategories.indexOf(cat.name) > -1}
                     />
                     <ListItemText primary={cat.name} />
                   </MenuItem>
@@ -202,7 +202,7 @@ const HospitalForm = ({ fetchHospitals }) => {
         </div>
         <div className="mb-4">
           <FormControl fullWidth>
-            <InputLabel>Is Premium</InputLabel>
+            <legend>Is Premium</legend>
             <Select
               value={isPremium}
               onChange={(e) => setIsPremium(e.target.value)}

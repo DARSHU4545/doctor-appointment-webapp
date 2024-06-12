@@ -12,7 +12,11 @@ import {
   FormControl,
   FormHelperText,
   CircularProgress,
+  OutlinedInput,
+  Checkbox,
+  ListItemText,
 } from "@mui/material";
+import { getCategories } from "../services/CategoryService";
 
 const HospitalUpdatePage = () => {
   const { id } = useParams();
@@ -30,6 +34,21 @@ const HospitalUpdatePage = () => {
   const [email, setEmail] = useState("");
 
   useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await getCategories();
+        setCategories(response);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      } finally {
+        setLoading(false); // Set loading to false once data is fetched
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
     const fetchHospital = async () => {
       try {
         const data = await getHospital(id);
@@ -39,7 +58,7 @@ const HospitalUpdatePage = () => {
         setPhoneNumber(data.phoneNumber);
         setAddress(data.address);
         setDescription(data.description);
-        setSelectedCategories(data.categories.map((cat) => cat._id));
+        setSelectedCategories(data.category);
         setIsPremium(data.isPremium);
         setImages(data.images);
         setEmail(data.email);
@@ -51,6 +70,10 @@ const HospitalUpdatePage = () => {
     fetchHospital();
   }, [id]);
 
+  const handleCategoryChange = (event) => {
+    setSelectedCategories(event.target.value);
+  };
+
   const handleUpdate = async () => {
     const formData = new FormData();
     formData.append("name", name);
@@ -61,7 +84,7 @@ const HospitalUpdatePage = () => {
     formData.append("isPremium", isPremium);
     formData.append("email", email);
     selectedCategories.forEach((category) => {
-      formData.append("categories", category);
+      formData.append("category", category);
     });
     images.forEach((image, index) => {
       if (image instanceof File) {
@@ -159,40 +182,45 @@ const HospitalUpdatePage = () => {
             </div>
             <div className="mb-4">
               <FormControl fullWidth>
-                <InputLabel>Categories</InputLabel>
+                <InputLabel>Category</InputLabel>
                 <Select
                   multiple
                   value={selectedCategories}
-                  onChange={(e) => setSelectedCategories(e.target.value)}
-                  required
-                  inputProps={{
-                    name: "categories",
-                    id: "categories",
-                  }}
+                  onChange={handleCategoryChange}
+                  input={<OutlinedInput label="Category" />}
+                  renderValue={(selected) =>
+                    selected
+                      .map(
+                        (value) =>
+                          categories.find((cat) => cat.name === value)?.name ||
+                          ""
+                      )
+                      .join(", ")
+                  }
                 >
-                  {hospital?.categories?.map((category) => (
-                    <MenuItem key={category._id} value={category._id}>
-                      {category.name}
+                  {categories?.map((cat) => (
+                    <MenuItem key={cat._id} value={cat.name}>
+                      <Checkbox
+                        checked={selectedCategories.indexOf(cat.name) > -1}
+                      />
+                      <ListItemText primary={cat.name} />
                     </MenuItem>
                   ))}
                 </Select>
+
                 <FormHelperText>Select one or more categories</FormHelperText>
               </FormControl>
             </div>
             <div className="mb-4">
               <FormControl fullWidth>
-                <InputLabel>Is Premium</InputLabel>
+                <legend>Is Premium</legend>
                 <Select
                   value={isPremium}
-                  onChange={(e) => setIsPremium(e.target.value === "true")}
+                  onChange={(e) => setIsPremium(e.target.value)}
                   required
-                  inputProps={{
-                    name: "isPremium",
-                    id: "isPremium",
-                  }}
                 >
-                  <MenuItem value={"true"}>Yes</MenuItem>
-                  <MenuItem value={"false"}>No</MenuItem>
+                  <MenuItem value={true}>Yes</MenuItem>
+                  <MenuItem value={false}>No</MenuItem>
                 </Select>
                 <FormHelperText>
                   Select if the hospital is premium
@@ -200,7 +228,7 @@ const HospitalUpdatePage = () => {
               </FormControl>
             </div>
             <div className="mb-4">
-              {hospital.images.map((image, index) => (
+              {hospital?.images?.map((image, index) => (
                 <img
                   key={index}
                   src={image.imageUrl}
