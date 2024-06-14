@@ -226,7 +226,7 @@ const DoctorUpdate = () => {
                 labelId="category-label"
                 id="category"
                 name="category"
-                value={category}
+                value={category || "smaple"}
                 onChange={handleChange}
               >
                 {categories.map((cat) => {

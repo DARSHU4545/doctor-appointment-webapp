@@ -8,6 +8,7 @@ const cloudinary = require("cloudinary").v2;
 const hospitalRoutes = require("./src/routes/hospital.js");
 const filterRoutes = require("./src/routes/filter.js");
 const doctorRoutes = require("./src/routes/doctor.js");
+const appointmentRoutes = require("./src/routes/appointment.js");
 const cors = require("cors");
 
 const app = express();
@@ -27,6 +28,7 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/hospitals", hospitalRoutes);
 app.use("/api/doctors", doctorRoutes);
 app.use("/api/filter", filterRoutes);
+app.use("/api", appointmentRoutes);
 
 connectDb();
 app.listen(process.env.PORT || 5000, () => {
